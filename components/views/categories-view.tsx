@@ -260,8 +260,10 @@ export function CategoriesView() {
             Organize suas receitas e despesas por categoria
           </p>
         </div>
-        <Button onClick={openNew} className="gap-2">
-          <Plus className="h-4 w-4" />
+        <Button onClick={openNew} variant="cta" size="cta">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20">
+            <Plus className="h-4 w-4" />
+          </span>
           Nova categoria
         </Button>
       </header>

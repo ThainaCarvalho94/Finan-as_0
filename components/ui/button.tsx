@@ -18,6 +18,8 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
+        cta:
+          "rounded-full border-0 bg-gradient-to-r from-[var(--chart-1)] to-[#2563eb] text-primary-foreground shadow-[0_4px_16px_color-mix(in_oklch,var(--chart-1)_38%,transparent)] hover:from-[#4f93f7] hover:to-[#3b82f6] hover:shadow-[0_6px_22px_color-mix(in_oklch,var(--chart-1)_48%,transparent)] active:scale-[0.98] dark:from-[var(--chart-1)] dark:to-[#3b82f6] dark:shadow-[0_4px_20px_color-mix(in_oklch,var(--chart-1)_32%,transparent)] dark:hover:shadow-[0_6px_26px_color-mix(in_oklch,var(--chart-1)_42%,transparent)]",
       },
       size: {
         default:
@@ -25,6 +27,7 @@ const buttonVariants = cva(
         xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
         sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        cta: "h-11 gap-2.5 px-5 text-sm font-semibold has-data-[icon=inline-start]:pl-4",
         icon: "size-8",
         "icon-xs":
           "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
