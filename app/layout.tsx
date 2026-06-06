@@ -21,6 +21,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'Gestão Financeira — Controle de Receitas e Despesas',
   description: 'Gerencie receitas, despesas e analise seu fluxo de caixa mês a mês',
+  applicationName: 'Gestão Financeira App',
   generator: 'v0.app',
   icons: {
     icon: [
