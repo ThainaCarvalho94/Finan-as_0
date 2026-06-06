@@ -11,6 +11,7 @@ import {
 } from "react"
 import type { User } from "@supabase/supabase-js"
 import { toast } from "sonner"
+import { mapAuthError } from "@/lib/auth-errors"
 import { supabase } from "@/lib/supabase"
 
 export type UserProfile = {
@@ -70,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       toast.error(
         error.message === "Invalid login credentials"
           ? "E-mail ou senha incorretos."
-          : error.message,
+          : mapAuthError(error.message),
       )
       return false
     }
@@ -80,19 +81,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = useCallback(
     async (email: string, password: string, fullName: string) => {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { full_name: fullName.trim() },
-        },
-      })
-      if (error) {
-        toast.error(error.message)
+      const trimmedEmail = email.trim().toLowerCase()
+      const trimmedName = fullName.trim()
+
+      try {
+        const res = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: trimmedEmail,
+            password,
+            fullName: trimmedName,
+          }),
+        })
+
+        const data = (await res.json().catch(() => ({}))) as { error?: string }
+
+        if (!res.ok) {
+          toast.error(data.error ?? "Não foi possível criar a conta.")
+          return false
+        }
+
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: trimmedEmail,
+          password,
+        })
+
+        if (signInError) {
+          toast.success("Conta criada! Entre com seu e-mail e senha.")
+          return true
+        }
+
+        toast.success("Conta criada com sucesso!")
+        return true
+      } catch {
+        toast.error("Erro de conexão. Verifique sua internet e tente novamente.")
         return false
       }
-      toast.success("Conta criada com sucesso!")
-      return true
     },
     [],
   )
