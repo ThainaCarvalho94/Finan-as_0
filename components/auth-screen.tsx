@@ -9,7 +9,7 @@ import {
   Lock,
   Mail,
 } from "lucide-react"
-import { AuthDivider, AuthLayout, GoogleIcon } from "@/components/auth-layout"
+import { AuthLayout } from "@/components/auth-layout"
 import { AuthInputField } from "@/components/auth-input-field"
 import { useTheme } from "@/components/theme-provider"
 import { useAuth } from "@/lib/auth-store"
@@ -19,13 +19,12 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export function AuthScreen() {
-  const { signIn, signUp, resetPassword, signInWithGoogle } = useAuth()
+  const { signIn, signUp, resetPassword } = useAuth()
   const { theme } = useTheme()
   const [tab, setTab] = useState<"login" | "register">("login")
   const [forgotMode, setForgotMode] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [googleLoading, setGoogleLoading] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
 
   const [loginEmail, setLoginEmail] = useState("")
@@ -62,12 +61,6 @@ export function AuthScreen() {
     )
     setSubmitting(false)
     if (ok) setTab("login")
-  }
-
-  async function handleGoogleSignIn() {
-    setGoogleLoading(true)
-    await signInWithGoogle()
-    setGoogleLoading(false)
   }
 
   return (
@@ -161,11 +154,11 @@ export function AuthScreen() {
           </div>
         ) : (
           <>
-            <div className="mb-5 text-center sm:mb-6 sm:text-left">
-              <h2 className="text-lg font-bold tracking-tight sm:text-xl">
+            <div className="mb-3 text-left sm:mb-6">
+              <h2 className="text-base font-bold tracking-tight sm:text-xl">
                 {tab === "login" ? "Bem-vindo de volta! 👋" : "Crie sua conta ✨"}
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-0.5 text-xs text-muted-foreground sm:mt-1 sm:text-sm">
                 {tab === "login"
                   ? "Entre na sua conta para continuar"
                   : "Cadastre-se para começar a gerenciar suas finanças"}
@@ -189,7 +182,7 @@ export function AuthScreen() {
               </TabsList>
 
               <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-4">
+                <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="login-email">E-mail</Label>
                     <AuthInputField
@@ -252,29 +245,10 @@ export function AuthScreen() {
                     )}
                   </Button>
                 </form>
-
-                <AuthDivider />
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-11 w-full rounded-xl bg-background text-sm font-medium dark:bg-input/20"
-                  onClick={handleGoogleSignIn}
-                  disabled={googleLoading || submitting}
-                >
-                  {googleLoading ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    <>
-                      <GoogleIcon className="h-5 w-5" />
-                      Entrar com Google
-                    </>
-                  )}
-                </Button>
               </TabsContent>
 
               <TabsContent value="register">
-                <form onSubmit={handleRegister} className="space-y-4">
+                <form onSubmit={handleRegister} className="space-y-3 sm:space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="register-name">Nome completo</Label>
                     <Input
@@ -285,7 +259,7 @@ export function AuthScreen() {
                       onChange={(e) => setRegisterName(e.target.value)}
                       required
                       autoComplete="name"
-                      className="h-11 bg-accent/40 dark:bg-input/30"
+                      className="h-10 bg-accent/40 sm:h-11 dark:bg-input/30"
                     />
                   </div>
                   <div className="space-y-2">
@@ -343,25 +317,6 @@ export function AuthScreen() {
                     )}
                   </Button>
                 </form>
-
-                <AuthDivider />
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-11 w-full rounded-xl bg-background text-sm font-medium dark:bg-input/20"
-                  onClick={handleGoogleSignIn}
-                  disabled={googleLoading || submitting}
-                >
-                  {googleLoading ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    <>
-                      <GoogleIcon className="h-5 w-5" />
-                      Cadastrar com Google
-                    </>
-                  )}
-                </Button>
               </TabsContent>
             </Tabs>
           </>

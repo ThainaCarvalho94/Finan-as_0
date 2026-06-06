@@ -31,7 +31,6 @@ type AuthContextValue = {
   updateProfile: (fullName: string) => Promise<boolean>
   resetPassword: (email: string) => Promise<boolean>
   updatePassword: (password: string) => Promise<boolean>
-  signInWithGoogle: () => Promise<boolean>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -153,20 +152,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return true
   }, [])
 
-  const signInWithGoogle = useCallback(async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/`,
-      },
-    })
-    if (error) {
-      toast.error("Não foi possível entrar com Google.")
-      return false
-    }
-    return true
-  }, [])
-
   const updateProfile = useCallback(async (fullName: string) => {
     const trimmed = fullName.trim()
     if (!trimmed) {
@@ -201,7 +186,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       updateProfile,
       resetPassword,
       updatePassword,
-      signInWithGoogle,
     }),
     [
       loading,
@@ -213,7 +197,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       updateProfile,
       resetPassword,
       updatePassword,
-      signInWithGoogle,
     ],
   )
 

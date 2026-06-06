@@ -10,7 +10,7 @@ export function AuthThemeSwitch({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-1 rounded-full border border-border/70 bg-card/90 p-1 shadow-sm backdrop-blur-sm",
+        "inline-flex max-w-full items-center gap-0.5 rounded-full border border-border/70 bg-card/90 p-0.5 shadow-sm backdrop-blur-sm sm:gap-1 sm:p-1",
         className,
       )}
       role="group"
@@ -20,7 +20,7 @@ export function AuthThemeSwitch({ className }: { className?: string }) {
         type="button"
         onClick={() => setTheme("light")}
         className={cn(
-          "flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium transition-all sm:gap-2 sm:px-3.5 sm:text-sm",
+          "flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all sm:gap-1.5 sm:px-3.5 sm:py-1.5 sm:text-sm",
           theme === "light"
             ? "bg-primary text-primary-foreground shadow-sm"
             : "text-muted-foreground hover:text-foreground",
@@ -28,15 +28,15 @@ export function AuthThemeSwitch({ className }: { className?: string }) {
         aria-pressed={theme === "light"}
         aria-label="Modo claro"
       >
-        <Sun className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-        <span className="hidden min-[380px]:inline">Modo claro</span>
-        <span className="min-[380px]:hidden">Claro</span>
+        <Sun className="h-3 w-3 shrink-0 sm:h-4 sm:w-4" />
+        <span className="sm:hidden">Claro</span>
+        <span className="hidden sm:inline">Modo claro</span>
       </button>
       <button
         type="button"
         onClick={() => setTheme("dark")}
         className={cn(
-          "flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium transition-all sm:gap-2 sm:px-3.5 sm:text-sm",
+          "flex items-center justify-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all sm:gap-1.5 sm:px-3.5 sm:py-1.5 sm:text-sm",
           theme === "dark"
             ? "bg-emerald-500 text-white shadow-sm"
             : "text-muted-foreground hover:text-foreground",
@@ -44,9 +44,9 @@ export function AuthThemeSwitch({ className }: { className?: string }) {
         aria-pressed={theme === "dark"}
         aria-label="Modo escuro"
       >
-        <Moon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-        <span className="hidden min-[380px]:inline">Modo escuro</span>
-        <span className="min-[380px]:hidden">Escuro</span>
+        <Moon className="h-3 w-3 shrink-0 sm:h-4 sm:w-4" />
+        <span className="sm:hidden">Escuro</span>
+        <span className="hidden sm:inline">Modo escuro</span>
       </button>
     </div>
   )

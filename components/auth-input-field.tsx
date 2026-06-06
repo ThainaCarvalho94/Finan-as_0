@@ -41,7 +41,7 @@ export function AuthInputField({
   return (
     <div
       className={cn(
-        "auth-input-field flex h-11 w-full items-center overflow-hidden rounded-xl border border-input shadow-none",
+        "auth-input-field flex h-10 w-full items-center overflow-hidden rounded-xl border border-input shadow-none sm:h-11",
         variant === "email" && "bg-[#eff6ff] dark:bg-input/30",
         variant === "password" && "bg-[#f8fafc] dark:bg-input/30",
         variant === "default" && "bg-accent/40 dark:bg-input/30",
