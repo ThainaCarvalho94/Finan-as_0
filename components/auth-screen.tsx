@@ -69,7 +69,7 @@ export function AuthScreen() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        className="auth-card p-4 sm:p-6 md:p-8"
+        className="auth-card p-3 sm:p-6 md:p-8"
       >
         {forgotMode ? (
           <div className="space-y-4">
@@ -154,11 +154,11 @@ export function AuthScreen() {
           </div>
         ) : (
           <>
-            <div className="mb-3 text-left sm:mb-6">
-              <h2 className="text-base font-bold tracking-tight sm:text-xl">
+            <div className="mb-2 text-left sm:mb-6">
+              <h2 className="text-sm font-bold tracking-tight sm:text-xl">
                 {tab === "login" ? "Bem-vindo de volta! 👋" : "Crie sua conta ✨"}
               </h2>
-              <p className="mt-0.5 text-xs text-muted-foreground sm:mt-1 sm:text-sm">
+              <p className="mt-0.5 text-[11px] text-muted-foreground sm:mt-1 sm:text-sm">
                 {tab === "login"
                   ? "Entre na sua conta para continuar"
                   : "Cadastre-se para começar a gerenciar suas finanças"}
@@ -182,9 +182,9 @@ export function AuthScreen() {
               </TabsList>
 
               <TabsContent value="login">
-                <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="login-email">E-mail</Label>
+                <form onSubmit={handleLogin} className="space-y-2 sm:space-y-4">
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="login-email" className="text-xs sm:text-sm">E-mail</Label>
                     <AuthInputField
                       id="login-email"
                       icon={Mail}
@@ -197,8 +197,8 @@ export function AuthScreen() {
                       autoComplete="email"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="login-password">Senha</Label>
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="login-password" className="text-xs sm:text-sm">Senha</Label>
                     <AuthInputField
                       id="login-password"
                       icon={Lock}
@@ -248,9 +248,9 @@ export function AuthScreen() {
               </TabsContent>
 
               <TabsContent value="register">
-                <form onSubmit={handleRegister} className="space-y-3 sm:space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="register-name">Nome completo</Label>
+                <form onSubmit={handleRegister} className="space-y-2 sm:space-y-4">
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="register-name" className="text-xs sm:text-sm">Nome completo</Label>
                     <Input
                       id="register-name"
                       type="text"
@@ -262,8 +262,8 @@ export function AuthScreen() {
                       className="h-10 bg-accent/40 sm:h-11 dark:bg-input/30"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="register-email">E-mail</Label>
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="register-email" className="text-xs sm:text-sm">E-mail</Label>
                     <AuthInputField
                       id="register-email"
                       icon={Mail}
@@ -276,8 +276,8 @@ export function AuthScreen() {
                       autoComplete="email"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="register-password">Senha</Label>
+                  <div className="space-y-1 sm:space-y-2">
+                    <Label htmlFor="register-password" className="text-xs sm:text-sm">Senha</Label>
                     <AuthInputField
                       id="register-password"
                       icon={Lock}
