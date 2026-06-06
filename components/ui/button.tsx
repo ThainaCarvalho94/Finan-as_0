@@ -19,7 +19,7 @@ const buttonVariants = cva(
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",
         cta:
-          "rounded-full border-0 bg-gradient-to-r from-[var(--chart-1)] to-[#2563eb] text-primary-foreground shadow-[0_4px_16px_color-mix(in_oklch,var(--chart-1)_38%,transparent)] hover:from-[#4f93f7] hover:to-[#3b82f6] hover:shadow-[0_6px_22px_color-mix(in_oklch,var(--chart-1)_48%,transparent)] active:scale-[0.98] dark:from-[var(--chart-1)] dark:to-[#3b82f6] dark:shadow-[0_4px_20px_color-mix(in_oklch,var(--chart-1)_32%,transparent)] dark:hover:shadow-[0_6px_26px_color-mix(in_oklch,var(--chart-1)_42%,transparent)]",
+          "rounded-full border-0 bg-[var(--sidebar-primary)] text-[var(--sidebar-primary-foreground)] shadow-[0_4px_16px_color-mix(in_oklch,var(--sidebar-primary)_38%,transparent)] hover:brightness-105 hover:shadow-[0_6px_22px_color-mix(in_oklch,var(--sidebar-primary)_48%,transparent)] active:scale-[0.98] focus-visible:ring-[var(--sidebar-primary)]/40",
       },
       size: {
         default:

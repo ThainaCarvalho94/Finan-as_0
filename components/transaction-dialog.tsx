@@ -217,7 +217,12 @@ export function TransactionDialog({
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={saving}>
+            <Button
+              type="submit"
+              variant="cta"
+              className="h-9 rounded-xl px-4"
+              disabled={saving}
+            >
               {saving ? "Salvando..." : editing ? "Salvar" : "Adicionar"}
             </Button>
           </DialogFooter>

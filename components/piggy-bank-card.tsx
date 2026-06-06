@@ -241,8 +241,8 @@ export function PiggyBankCard({
 
       <div className="mt-4 grid grid-cols-2 gap-3">
         <Button
-          variant="default"
-          className="gap-1.5"
+          variant="cta"
+          className="h-9 gap-1.5 rounded-xl"
           onClick={() => openMove("deposit")}
         >
           <Plus className="h-4 w-4" />
@@ -278,7 +278,9 @@ export function PiggyBankCard({
             <Button variant="outline" onClick={() => setNameOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={confirmName}>Salvar</Button>
+            <Button onClick={confirmName} variant="cta" className="h-9 rounded-xl px-4">
+              Salvar
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -303,7 +305,9 @@ export function PiggyBankCard({
             <Button variant="outline" onClick={() => setGoalOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={confirmGoal}>Salvar meta</Button>
+            <Button onClick={confirmGoal} variant="cta" className="h-9 rounded-xl px-4">
+              Salvar meta
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -332,7 +336,11 @@ export function PiggyBankCard({
             <Button variant="outline" onClick={() => setMoveOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={confirmMove}>
+            <Button
+              onClick={confirmMove}
+              variant={moveMode === "deposit" ? "cta" : "outline"}
+              className="h-9 rounded-xl px-4"
+            >
               {moveMode === "deposit" ? "Guardar" : "Resgatar"}
             </Button>
           </DialogFooter>
@@ -373,7 +381,7 @@ export function AddPiggyBankCard({ index = 0 }: { index?: number }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
         onClick={() => setOpen(true)}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card/50 p-5 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:border-[var(--chart-4)] hover:bg-[color-mix(in_oklch,var(--chart-4)_6%,transparent)] hover:text-[var(--chart-4)]"
+        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border bg-card/50 p-5 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:border-[var(--sidebar-primary)] hover:bg-[color-mix(in_oklch,var(--sidebar-primary)_8%,transparent)] hover:text-[var(--sidebar-primary)]"
       >
         <Plus className="h-5 w-5" />
         Novo cofrinho
@@ -410,7 +418,9 @@ export function AddPiggyBankCard({ index = 0 }: { index?: number }) {
             <Button variant="outline" onClick={() => setOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={confirm}>Criar cofrinho</Button>
+            <Button onClick={confirm} variant="cta" className="h-9 rounded-xl px-4">
+              Criar cofrinho
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

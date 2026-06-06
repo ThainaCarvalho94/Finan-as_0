@@ -140,7 +140,9 @@ function CategoryDialog({
             >
               Cancelar
             </Button>
-            <Button type="submit">{editing ? "Salvar" : "Adicionar"}</Button>
+            <Button type="submit" variant="cta" className="h-9 rounded-xl px-4">
+              {editing ? "Salvar" : "Adicionar"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
