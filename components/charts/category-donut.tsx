@@ -34,22 +34,22 @@ export function CategoryDonut() {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.18 }}
-      className="finance-card"
+      className="finance-card overflow-hidden"
     >
       <h2 className="text-base font-semibold text-card-foreground">
         Despesas por categoria
       </h2>
       <p className="mb-2 text-sm text-muted-foreground">Distribuição total</p>
-      <div className="flex flex-col items-center gap-4 sm:flex-row">
-        <div className="chart-vibrant relative h-48 w-48 shrink-0">
+      <div className="flex min-w-0 flex-col items-center gap-4">
+        <div className="chart-vibrant relative h-40 w-40 shrink-0 sm:h-44 sm:w-44">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
                 data={data}
                 dataKey="value"
                 nameKey="name"
-                innerRadius={58}
-                outerRadius={84}
+                innerRadius={48}
+                outerRadius={72}
                 paddingAngle={3}
                 stroke="var(--card)"
                 strokeWidth={2}
@@ -77,24 +77,29 @@ export function CategoryDonut() {
             </span>
           </div>
         </div>
-        <ul className="flex-1 space-y-2">
+        <ul className="w-full min-w-0 space-y-2">
           {data.map((d, i) => (
             <motion.li
               key={d.name}
               initial={{ opacity: 0, x: 8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 + i * 0.05 }}
-              className="flex items-center justify-between text-sm"
+              className="flex min-w-0 items-center justify-between gap-2 text-sm"
             >
-              <span className="flex items-center gap-2 text-card-foreground">
+              <span className="flex min-w-0 items-center gap-2 text-card-foreground">
                 <span
-                  className="chart-legend-dot inline-block h-2.5 w-2.5 rounded-full"
+                  className="chart-legend-dot inline-block h-2.5 w-2.5 shrink-0 rounded-full"
                   style={{ backgroundColor: d.color, color: d.color }}
                 />
-                {d.name}
+                <span className="truncate">{d.name}</span>
               </span>
-              <span className="tabular-nums text-muted-foreground">
-                {((d.value / total) * 100).toFixed(0)}%
+              <span className="shrink-0 text-right tabular-nums text-muted-foreground">
+                <span className="block text-xs font-medium text-card-foreground">
+                  {formatCurrency(d.value)}
+                </span>
+                <span className="block text-[11px]">
+                  {total > 0 ? ((d.value / total) * 100).toFixed(0) : 0}%
+                </span>
               </span>
             </motion.li>
           ))}
