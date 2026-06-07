@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { InstallAppButton } from "@/components/install-app-button"
 
 export function ProfileView() {
   const { profile, updateProfile, signOut } = useAuth()
@@ -138,6 +139,8 @@ export function ProfileView() {
           </div>
         </CardContent>
       </Card>
+
+      <InstallAppButton />
 
       <Card>
         <CardHeader>
