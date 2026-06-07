@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react"
 import { toast } from "sonner"
+import { useAuth } from "@/lib/auth-store"
 import { supabase } from "@/lib/supabase"
 import type { Category, PiggyBank, Transaction, TransactionType } from "@/lib/types"
 
@@ -95,12 +96,17 @@ function mapPiggyBank(row: DbPiggy): PiggyBank {
 }
 
 export function FinanceProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth()
+  const userId = user?.id
+
   const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState<Category[]>([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [piggyBanks, setPiggyBanks] = useState<PiggyBank[]>([])
 
   const loadData = useCallback(async () => {
+    if (!userId) return
+
     const [catsRes, txsRes, piggyRes] = await Promise.all([
       supabase.from("categorias").select("*").order("name"),
       supabase.from("transacoes").select("*").order("date", { ascending: false }),
@@ -114,17 +120,27 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     setCategories((catsRes.data as DbCategory[]).map(mapCategory))
     setTransactions((txsRes.data as DbTransaction[]).map(mapTransaction))
     setPiggyBanks((piggyRes.data as DbPiggy[]).map(mapPiggyBank))
-  }, [])
+  }, [userId])
 
   useEffect(() => {
+    if (!userId) {
+      setCategories([])
+      setTransactions([])
+      setPiggyBanks([])
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
     loadData()
       .catch(() => {
         toast.error("Falha ao carregar dados. Tente atualizar a página.")
       })
       .finally(() => setLoading(false))
-  }, [loadData])
+  }, [userId, loadData])
 
   const addPiggyBank = useCallback((data: { name: string; goal?: number }) => {
+    if (!userId) return
     const name = data.name.trim()
     if (!name) {
       toast.error("Informe um nome para o cofrinho.")
@@ -133,7 +149,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     const goal = Math.max(0, data.goal ?? 0)
     supabase
       .from("cofrinho")
-      .insert({ name, goal, saved: 0 })
+      .insert({ name, goal, saved: 0, user_id: userId })
       .select()
       .single()
       .then(({ data: row, error }) => {
@@ -145,7 +161,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
         setPiggyBanks((prev) => [...prev, mapPiggyBank(row as DbPiggy)])
         toast.success("Cofrinho criado.")
       })
-  }, [])
+  }, [userId])
 
   const updatePiggyBank = useCallback(
     (id: string, data: { name?: string; goal?: number }) => {
@@ -264,9 +280,10 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const addCategory = useCallback((data: Omit<Category, "id">) => {
+    if (!userId) return
     supabase
       .from("categorias")
-      .insert(data)
+      .insert({ ...data, user_id: userId })
       .select()
       .single()
       .then(({ data: row, error }) => {
@@ -278,7 +295,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
         setCategories((prev) => [...prev, mapCategory(row as DbCategory)])
         toast.success("Categoria criada.")
       })
-  }, [])
+  }, [userId])
 
   const updateCategory = useCallback((id: string, data: Omit<Category, "id">) => {
     let previous: Category | undefined
@@ -329,6 +346,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const addTransaction = useCallback(async (data: Omit<Transaction, "id">) => {
+    if (!userId) return false
     const payload = {
       description: data.description,
       category_id: data.categoryId,
@@ -336,6 +354,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       date: data.date,
       tag: data.tag,
       type: data.type,
+      user_id: userId,
     }
     const { data: row, error } = await supabase
       .from("transacoes")
@@ -355,7 +374,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     ])
     toast.success("Transação adicionada.")
     return true
-  }, [])
+  }, [userId])
 
   const updateTransaction = useCallback(
     async (id: string, data: Omit<Transaction, "id">) => {

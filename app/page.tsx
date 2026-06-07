@@ -22,7 +22,7 @@ export default function Page() {
   }
 
   return (
-    <FinanceProvider>
+    <FinanceProvider key={user.id}>
       <AppShell />
     </FinanceProvider>
   )
