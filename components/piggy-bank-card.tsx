@@ -33,12 +33,44 @@ function AnimatedCurrency({ value }: { value: number }) {
   return <motion.span>{text}</motion.span>
 }
 
-function ProgressRing({ progress }: { progress: number }) {
+function ProgressRing({
+  progress,
+  goal,
+  onEditGoal,
+}: {
+  progress: number
+  goal: number
+  onEditGoal?: () => void
+}) {
   const size = 180
   const stroke = 14
   const radius = (size - stroke) / 2
   const circumference = 2 * Math.PI * radius
   const clamped = Math.min(1, Math.max(0, progress))
+  const needsGoal = goal <= 0
+
+  const inner = (
+    <>
+      <PiggyBank className="mb-1 h-6 w-6 text-[var(--chart-4)]" />
+      {needsGoal ? (
+        <span className="text-center text-sm font-semibold text-[var(--chart-4)]">
+          Definir meta
+        </span>
+      ) : (
+        <motion.span
+          key={Math.round(clamped * 100)}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-2xl font-bold tabular-nums text-card-foreground"
+        >
+          {Math.round(clamped * 100)}%
+        </motion.span>
+      )}
+      <span className="text-xs text-muted-foreground">
+        {needsGoal ? "toque para começar" : "da meta"}
+      </span>
+    </>
+  )
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
@@ -65,18 +97,20 @@ function ProgressRing({ progress }: { progress: number }) {
           transition={{ duration: 1.1, ease: "easeOut" }}
         />
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <PiggyBank className="mb-1 h-6 w-6 text-[var(--chart-4)]" />
-        <motion.span
-          key={Math.round(clamped * 100)}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-2xl font-bold tabular-nums text-card-foreground"
+      {onEditGoal ? (
+        <button
+          type="button"
+          onClick={onEditGoal}
+          className="absolute inset-0 flex flex-col items-center justify-center rounded-full transition-colors hover:bg-[color-mix(in_oklch,var(--chart-4)_8%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--chart-4)]"
+          aria-label={needsGoal ? "Definir meta do cofrinho" : "Editar meta do cofrinho"}
         >
-          {Math.round(clamped * 100)}%
-        </motion.span>
-        <span className="text-xs text-muted-foreground">da meta</span>
-      </div>
+          {inner}
+        </button>
+      ) : (
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          {inner}
+        </div>
+      )}
     </div>
   )
 }
@@ -110,6 +144,11 @@ export function PiggyBankCard({
     setMoveMode(mode)
     setAmountInput("")
     setMoveOpen(true)
+  }
+
+  const openGoal = () => {
+    setGoalInput(String(piggyBank.goal))
+    setGoalOpen(true)
   }
 
   const confirmName = () => {
@@ -181,10 +220,7 @@ export function PiggyBankCard({
             variant="outline"
             size="sm"
             className="gap-1.5"
-            onClick={() => {
-              setGoalInput(String(piggyBank.goal))
-              setGoalOpen(true)
-            }}
+            onClick={openGoal}
           >
             <Target className="h-3.5 w-3.5" />
             Meta
@@ -204,7 +240,7 @@ export function PiggyBankCard({
       </div>
 
       <div className="mt-5 flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:gap-6">
-        <ProgressRing progress={progress} />
+        <ProgressRing progress={progress} goal={piggyBank.goal} onEditGoal={openGoal} />
 
         <div className="flex-1 space-y-3 self-stretch">
           <div className="rounded-xl bg-[color-mix(in_oklch,var(--chart-4)_10%,transparent)] p-3">
@@ -216,12 +252,19 @@ export function PiggyBankCard({
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-xl bg-secondary p-3">
+            <button
+              type="button"
+              onClick={openGoal}
+              className="rounded-xl bg-secondary p-3 text-left transition-colors hover:bg-[color-mix(in_oklch,var(--chart-4)_12%,var(--secondary))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--chart-4)]"
+              aria-label="Editar meta do cofrinho"
+            >
               <p className="text-xs font-medium text-muted-foreground">Meta</p>
               <p className="text-sm font-semibold tabular-nums text-card-foreground">
-                {formatCurrency(piggyBank.goal)}
+                {piggyBank.goal > 0
+                  ? formatCurrency(piggyBank.goal)
+                  : "Definir meta"}
               </p>
-            </div>
+            </button>
             <div className="rounded-xl bg-secondary p-3">
               <p className="text-xs font-medium text-muted-foreground">
                 {reached ? "Status" : "Falta"}
