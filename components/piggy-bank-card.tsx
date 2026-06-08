@@ -101,7 +101,7 @@ function ProgressRing({
         <button
           type="button"
           onClick={onEditGoal}
-          className="absolute inset-0 flex flex-col items-center justify-center rounded-full transition-colors hover:bg-[color-mix(in_oklch,var(--chart-4)_8%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--chart-4)]"
+          className="absolute inset-0 flex flex-col items-center justify-center rounded-full touch-manipulation transition-colors hover:bg-[color-mix(in_oklch,var(--chart-4)_8%,transparent)] active:bg-[color-mix(in_oklch,var(--chart-4)_12%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--chart-4)]"
           aria-label={needsGoal ? "Definir meta do cofrinho" : "Editar meta do cofrinho"}
         >
           {inner}
@@ -119,12 +119,16 @@ type PiggyBankCardProps = {
   piggyBank: PiggyBankType
   index?: number
   canDelete?: boolean
+  autoOpenGoal?: boolean
+  onAutoOpenGoalHandled?: () => void
 }
 
 export function PiggyBankCard({
   piggyBank,
   index = 0,
   canDelete = true,
+  autoOpenGoal = false,
+  onAutoOpenGoalHandled,
 }: PiggyBankCardProps) {
   const { updatePiggyBank, deletePiggyBank, depositPiggy, withdrawPiggy } =
     useFinance()
@@ -150,6 +154,13 @@ export function PiggyBankCard({
     setGoalInput(String(piggyBank.goal))
     setGoalOpen(true)
   }
+
+  useEffect(() => {
+    if (!autoOpenGoal) return
+    setGoalInput(String(piggyBank.goal))
+    setGoalOpen(true)
+    onAutoOpenGoalHandled?.()
+  }, [autoOpenGoal, onAutoOpenGoalHandled, piggyBank.goal])
 
   const confirmName = () => {
     const name = nameInput.trim()
@@ -189,7 +200,7 @@ export function PiggyBankCard({
       transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
       className="rounded-2xl border border-border bg-card p-5 shadow-sm"
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-center gap-2">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[color-mix(in_oklch,var(--chart-4)_15%,transparent)]">
             <PiggyBank className="h-[18px] w-[18px] text-[var(--chart-4)]" />
@@ -215,15 +226,15 @@ export function PiggyBankCard({
             <p className="text-xs text-muted-foreground">Meta de poupança</p>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:gap-1">
           <Button
             variant="outline"
             size="sm"
-            className="gap-1.5"
+            className="h-10 flex-1 gap-1.5 rounded-xl sm:h-8 sm:flex-none"
             onClick={openGoal}
           >
             <Target className="h-3.5 w-3.5" />
-            Meta
+            {piggyBank.goal > 0 ? "Meta" : "Definir meta"}
           </Button>
           {canDelete && (
             <Button

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { PiggyBank } from "lucide-react"
 import { AddPiggyBankCard } from "@/components/piggy-bank-card"
 import { PiggyBanksSection } from "@/components/piggy-banks-section"
@@ -12,15 +12,17 @@ import { cn } from "@/lib/utils"
 const GOAL_COLOR = "var(--chart-4)"
 
 function GoalItem({
+  id,
   name,
   saved,
   goal,
   onEdit,
 }: {
+  id: string
   name: string
   saved: number
   goal: number
-  onEdit: () => void
+  onEdit: (id: string) => void
 }) {
   const progress = goal > 0 ? Math.min(1, saved / goal) : 0
   const pct = Math.round(progress * 100)
@@ -29,8 +31,8 @@ function GoalItem({
   return (
     <button
       type="button"
-      onClick={onEdit}
-      className="min-w-0 flex-1 space-y-3 rounded-xl text-left transition-colors hover:bg-[color-mix(in_oklch,var(--chart-4)_6%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--chart-4)]"
+      onClick={() => onEdit(id)}
+      className="min-w-0 flex-1 space-y-3 rounded-xl text-left touch-manipulation transition-colors hover:bg-[color-mix(in_oklch,var(--chart-4)_6%,transparent)] active:bg-[color-mix(in_oklch,var(--chart-4)_10%,transparent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--chart-4)]"
       aria-label={needsGoal ? `Definir meta de ${name}` : `Editar meta de ${name}`}
     >
       <div className="flex items-start gap-3">
@@ -73,17 +75,44 @@ function GoalItem({
   )
 }
 
+function GoalsManagement({
+  editGoalId,
+  onEditGoalHandled,
+}: {
+  editGoalId: string | null
+  onEditGoalHandled: () => void
+}) {
+  const { piggyBanks } = useFinance()
+
+  if (piggyBanks.length > 0) {
+    return (
+      <PiggyBanksSection
+        editGoalId={editGoalId}
+        onEditGoalHandled={onEditGoalHandled}
+      />
+    )
+  }
+
+  return <AddPiggyBankCard />
+}
+
 export function FinancialGoalsOverview() {
   const { piggyBanks } = useFinance()
-  const [expanded, setExpanded] = useState(false)
-  const preview = piggyBanks.slice(0, 3)
   const needsSetup = piggyBanks.some((p) => p.goal <= 0)
+  const [expanded, setExpanded] = useState(needsSetup)
+  const [editGoalId, setEditGoalId] = useState<string | null>(null)
+  const preview = piggyBanks.slice(0, 3)
 
   useEffect(() => {
     if (piggyBanks.length === 0 || needsSetup) {
       setExpanded(true)
     }
   }, [piggyBanks.length, needsSetup])
+
+  const handleEditGoal = (id: string) => {
+    setEditGoalId(id)
+    setExpanded(true)
+  }
 
   return (
     <motion.div
@@ -99,54 +128,55 @@ export function FinancialGoalsOverview() {
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="text-sm font-medium text-primary transition-colors hover:text-primary/80"
+          className="hidden text-sm font-medium text-primary transition-colors hover:text-primary/80 md:inline"
         >
           {expanded ? "Ver menos" : piggyBanks.length > 0 ? "Gerenciar" : "Criar meta"}
         </button>
       </div>
 
-      {preview.length === 0 && !expanded ? (
-        <p className="text-sm text-muted-foreground">
-          Nenhuma meta cadastrada. Crie um cofrinho para acompanhar seus objetivos.
-        </p>
-      ) : preview.length > 0 ? (
-        <div
-          className={cn(
-            "flex flex-col gap-6",
-            preview.length > 1 && "lg:flex-row lg:gap-8",
-          )}
-        >
-          {preview.map((goal) => (
-            <GoalItem
-              key={goal.id}
-              name={goal.name}
-              saved={goal.saved}
-              goal={goal.goal}
-              onEdit={() => setExpanded(true)}
-            />
-          ))}
-        </div>
-      ) : null}
+      {/* Mobile: cards de edição sempre visíveis */}
+      <div className="md:hidden">
+        <GoalsManagement
+          editGoalId={editGoalId}
+          onEditGoalHandled={() => setEditGoalId(null)}
+        />
+      </div>
 
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="overflow-hidden"
+      {/* Desktop: resumo + seção expansível */}
+      <div className="hidden md:block">
+        {preview.length === 0 && !expanded ? (
+          <p className="text-sm text-muted-foreground">
+            Nenhuma meta cadastrada. Crie um cofrinho para acompanhar seus objetivos.
+          </p>
+        ) : preview.length > 0 ? (
+          <div
+            className={cn(
+              "flex flex-col gap-6",
+              preview.length > 1 && "lg:flex-row lg:gap-8",
+            )}
           >
-            <div className="mt-6 border-t border-border pt-6">
-              {piggyBanks.length > 0 ? (
-                <PiggyBanksSection />
-              ) : (
-                <AddPiggyBankCard />
-              )}
-            </div>
-          </motion.div>
+            {preview.map((goal) => (
+              <GoalItem
+                key={goal.id}
+                id={goal.id}
+                name={goal.name}
+                saved={goal.saved}
+                goal={goal.goal}
+                onEdit={handleEditGoal}
+              />
+            ))}
+          </div>
+        ) : null}
+
+        {expanded && (
+          <div className="mt-6 border-t border-border pt-6">
+            <GoalsManagement
+              editGoalId={editGoalId}
+              onEditGoalHandled={() => setEditGoalId(null)}
+            />
+          </div>
         )}
-      </AnimatePresence>
+      </div>
     </motion.div>
   )
 }

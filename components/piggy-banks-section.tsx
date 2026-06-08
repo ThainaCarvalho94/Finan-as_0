@@ -3,7 +3,15 @@
 import { PiggyBankCard, AddPiggyBankCard } from "@/components/piggy-bank-card"
 import { useFinance } from "@/lib/finance-store"
 
-export function PiggyBanksSection() {
+type PiggyBanksSectionProps = {
+  editGoalId?: string | null
+  onEditGoalHandled?: () => void
+}
+
+export function PiggyBanksSection({
+  editGoalId = null,
+  onEditGoalHandled,
+}: PiggyBanksSectionProps = {}) {
   const { piggyBanks } = useFinance()
 
   return (
@@ -14,6 +22,8 @@ export function PiggyBanksSection() {
           piggyBank={piggyBank}
           index={i}
           canDelete={piggyBanks.length > 1}
+          autoOpenGoal={editGoalId === piggyBank.id}
+          onAutoOpenGoalHandled={onEditGoalHandled}
         />
       ))}
       <div className="sm:col-span-2 xl:col-span-1 2xl:col-span-2">
